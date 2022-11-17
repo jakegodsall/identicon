@@ -12,6 +12,16 @@ defmodule Identicon do
 
   @doc """
     Takes string input and returns `Identicon.Image{hex: hex}` struct where `hex` is the hexadecimal representation of the MD5 hash of the string.
+
+    ## Examples
+
+          iex> Identicon.hash_input("test")
+          %Identicon.Image{
+            hex: [9, 143, 107, 205, 70, 33, 211, 115, 202, 222, 78, 131, 38, 39, 180, 246],
+            color: nil,
+            grid: nil,
+            pixel_map: nil}
+
   """
   def hash_input(input) do
     hex = :crypto.hash(:md5, input)
@@ -20,9 +30,25 @@ defmodule Identicon do
     %Identicon.Image{hex: hex}
   end
 
+  @doc """
+    Extracts the first three values from `%Identicon.Image{hex: hex}` and adds as `%Identicon.Image{color: color}`.
+
+  ## Examples
+
+        iex> test = %Identicon.Image{hex: [1, 2, 3, 4, 5]}
+        iex> Identicon.pick_color(test)
+        %Identicon.Image{
+          hex: [1, 2, 3, 4, 5],
+          color: {1, 2, 3},
+          grid: nil,
+          pixel_map: nil
+        }
+
+  """
   def pick_color(%Identicon.Image{hex: [red, green, blue | _tail]} = image) do
     %Identicon.Image{image | color: {red, green, blue}}
   end
+
 
   def build_grid(%Identicon.Image{hex: hex} = image) do
     grid = hex
